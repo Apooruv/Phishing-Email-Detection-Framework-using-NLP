@@ -138,6 +138,12 @@
             opacity: 0.9;
         }
 
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .results {
             margin-top: 2rem;
             display: none;
@@ -246,6 +252,8 @@
             const text = emailInput.value.trim();
             if (!text) return;
 
+            console.log("Frontend: Starting analysis for content...");
+
             // Show loading state
             loader.style.display = 'block';
             btnText.style.display = 'none';
@@ -258,10 +266,14 @@
                     body: JSON.stringify({ text })
                 });
 
+                if (!response.ok) throw new Error('API server error');
+
                 const data = await response.json();
+                console.log("Frontend: Received prediction:", data);
                 displayResults(data);
             } catch (error) {
-                alert('Error connecting to analysis engine. Make sure the FastAPI server is running.');
+                console.error("Frontend: Analysis failed:", error);
+                alert('Error connecting to analysis engine. Make sure the FastAPI server is running at http://localhost:8000');
             } finally {
                 loader.style.display = 'none';
                 btnText.style.display = 'block';
@@ -269,17 +281,75 @@
             }
         });
 
+        // Handle incoming data from Chrome Extension
+        window.addEventListener('load', () => {
+            console.log("Frontend: Page loaded, checking for extension data...");
+            const urlParams = new URLSearchParams(window.location.search);
+            const externalData = urlParams.get('ext_data');
+            
+            if (externalData) {
+                try {
+                    console.log("Frontend: Processing extension data...");
+                    
+                    // CRITICAL FIX: URLSearchParams.get() ALREADY DECODES the URI.
+                    // Calling decodeURIComponent() again causes "URI malformed" or errors 
+                    // if the email body contains '%' characters.
+                    const decodedData = JSON.parse(externalData);
+                    
+                    if (decodedData && decodedData.body) {
+                        let formattedText = `Subject: ${decodedData.subject || 'No Subject'}\n`;
+                        formattedText += `From: ${decodedData.sender || 'Unknown Sender'}\n`;
+                        formattedText += `-------------------\n\n`;
+                        formattedText += decodedData.body;
+                        
+                        emailInput.value = formattedText;
+                        console.log("Frontend: Input auto-filled successfully.");
+                        
+                        // Ensure the button is enabled before clicking
+                        analyzeBtn.disabled = false;
+                        
+                        // Auto-click analyze after a short delay to ensure API is reachable
+                        setTimeout(() => {
+                            console.log("Frontend: Auto-triggering analysis...");
+                            analyzeBtn.click();
+                        }, 500);
+                    }
+                } catch (e) {
+                    console.error("Frontend: Failed to parse extension data. Error:", e);
+                    // Fallback: Check if it was a decoding error
+                    try {
+                        // Just in case it WASN'T decoded by the browser for some reason
+                        const retryData = JSON.parse(decodeURIComponent(externalData));
+                        emailInput.value = retryData.body;
+                        analyzeBtn.click();
+                    } catch (e2) {
+                        console.error("Frontend: Final fallback failed.", e2);
+                    }
+                }
+            }
+        });
+
         function displayResults(data) {
             results.style.display = 'block';
             const badge = document.getElementById('predictionBadge');
             badge.textContent = data.prediction;
-            badge.className = 'prediction-badge ' + (data.prediction === 'Phishing' ? 'badge-phishing' : 'badge-ham');
+            
+            // Set badge color based on threat level
+            if (data.threat_level === 'High') {
+                badge.className = 'prediction-badge badge-phishing';
+            } else if (data.threat_level === 'Low') {
+                badge.className = 'prediction-badge badge-ham';
+            } else {
+                badge.className = 'prediction-badge';
+                badge.style.background = 'rgba(245, 158, 11, 0.2)';
+                badge.style.color = '#f59e0b';
+                badge.style.border = '1px solid #f59e0b';
+            }
 
             document.getElementById('probValue').textContent = (data.phishing_probability * 100).toFixed(1) + '%';
             document.getElementById('urlValue').textContent = data.extracted_features.url_count;
             document.getElementById('urgencyValue').textContent = data.extracted_features.urgency_score.toFixed(2);
             
-            // Add Model Breakdown
             const breakdown = document.getElementById('modelBreakdown');
             if (breakdown) {
                 breakdown.innerHTML = `
@@ -289,12 +359,14 @@
                     </div>
                     <div class="feature-item">
                         <div class="feature-label">Advanced (Bi-LSTM)</div>
-                        <div class="feature-value">${(data.model_scores.advanced_lstm * 100).toFixed(1)}%</div>
+                        <div class="feature-value">${data.model_scores.advanced_lstm ? (data.model_scores.advanced_lstm * 100).toFixed(1) + '%' : 'N/A'}</div>
                     </div>
                 `;
             }
+            
+            // Scroll to results
+            results.scrollIntoView({ behavior: 'smooth' });
         }
-
     </script>
 </body>
 </html>
