@@ -1,37 +1,57 @@
-# Technology Justification & Comparative Analysis (Evolved v2)
+# Technology Justification & Comparative Analysis
 
-This document explains the rationale behind our tech stack, focusing on the evolution from a simple baseline to a high-concurrency consensus engine.
+This document explains the reasoning behind the chosen tech stack and how the system evolved from a simple baseline into a high-performance, consensus-based architecture.
 
 ---
 
 ## 1. Programming Language: Python 3.x
-- **Choice**: Python
-- **Why**: Industry standard for NLP and ML. Enables seamless integration between `NLTK`, `Scikit-learn`, and `TensorFlow`.
+
+**Choice:** Python  
+
+**Why:**  
+Python is the go-to language for machine learning and NLP. It makes it easy to integrate powerful libraries like NLTK, Scikit-learn, and TensorFlow within a single ecosystem. This allows faster development without worrying about compatibility issues between tools.
+
+---
 
 ## 2. Text Processing: NLTK
-- **Choice**: NLTK (Natural Language Toolkit)
-- **Why**: Provides granular control over tokenization and lemmatization, which is essential for security-focused text analysis where every character (URLs/IPs) matters.
 
-## 3. Modeling: The Consensus Engine (V1 + V2)
-- **Approach**: **Hybrid Baseline + Deep Learning**
-- **Why**: 
-    - **[V1] Random Forest**: Provides **Explainability**. In cybersecurity, knowing *why* an email was flagged (e.g., high urgency score + 3 URLs) is just as important as the flag itself.
-    - **[V2] Bi-LSTM**: Provides **Semantic Context**. It detects patterns in the *way* scammers write, catching deceptive intent even if they avoid common "threat words."
-- **Evolution**: By using both in a **Consensus Engine**, we eliminate the "single point of failure" in classification.
+**Choice:** NLTK (Natural Language Toolkit)  
 
-## 4. Performance Optimization: Joblib (New in V2)
-- **Choice**: **Joblib (Parallel Processing)**
-- **Why**: Text preprocessing (HTML stripping, Lemmatization) is CPU-bound. In V1, processing 10k emails took ~10 minutes. In V2, by using **Joblib** to distribute tasks across all 8 CPU cores, we reduced this time by **80%**.
+**Why:**  
+NLTK gives fine-grained control over text processing tasks like tokenization and lemmatization. This level of control is important in a security-focused system, where even small details—such as URLs or IP patterns—can make a big difference in detecting phishing attempts.
 
-## 5. Feature Vectorization: TF-IDF vs. Embeddings
-- **TF-IDF**: Used for the RF model for speed and word-level importance.
-- **Keras Embeddings**: Used for the Bi-LSTM to capture high-dimensional semantic relationships.
+---
 
-## 6. Web Framework: FastAPI
-- **Choice**: FastAPI
-- **Why**: Handles asynchronous requests and provides automatic Swagger documentation. Its speed is critical for real-time email scanning.
+## 3. Modeling: The Consensus Engine (V2.2)
 
-## 7. Containerization: Docker
-- **Choice**: Docker
-- **Why**: Solves "Dependency Hell." Ensures TensorFlow, NLTK data, and all Python libraries are perfectly consistent across development and deployment environments.
+**Approach:** Hybrid Weighted Consensus (40% RF / 60% LSTM)
+
+**Why:**  
+The system avoids the "single point of failure" of a single model by using two distinct architectures:
+- **Random Forest**: Excellent for structured indicators (IoCs) and keyword-based detection.
+- **Bi-LSTM**: Superior for capturing semantic intent and complex linguistic patterns.
+
+**Retraining (V2.2):** Both models were retrained on a perfectly balanced 10,000-email corpus of real-world Enron (Ham) and Nazario (Phishing) data to ensure the highest possible real-world accuracy.
+
+---
+
+## 8. Safety Layer: Cybersecurity Payload Heuristic
+
+**Choice:** Hard-coded Security Logic (IoC Check)
+
+**Why:**  
+Machine Learning models can suffer from **"Domain Shift"**—where modern safe text (like a job application) is confused with modern phishing text because both differ from the 20-year-old training data (Enron). 
+
+By implementing a hard rule that **risk is capped at 20% if 0 URLs/IPs/Reply-Emails are found**, we ensure that text-only clean emails are never blocked. This "Hybrid AI-Security" approach is standard in industrial-grade protection systems.
+
+---
+
+## Final Insight
+
+The overall tech stack is designed to balance:
+- **Performance** (parallel processing, FastAPI)  
+- **Accuracy** (hybrid modeling with weighted average)  
+- **Reliability** (Docker, Payload Heuristic override)  
+
+By combining Deep Learning with hard Cybersecurity heuristics, the system becomes both intelligent and physically safe for real-world deployment.
 
