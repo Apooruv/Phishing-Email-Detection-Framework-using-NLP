@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 
-def generate_synthetic_data(output_path="data/phishing_emails.csv", num_samples=1000):
+def generate_synthetic_data(output_path="data/phishing_emails.csv", num_samples=3000):
     """Generates a synthetic dataset for development."""
     phishing_templates = [
         "Urgent: Your account {id} was suspended. Please click {url} to verify.",
@@ -10,7 +10,12 @@ def generate_synthetic_data(output_path="data/phishing_emails.csv", num_samples=
         "Invoice {id} is attached. Please review it at {url}.",
         "Dear customer, your password for {email} has expired. Reset here: {url}",
         "Limited time offer! Get a free gift at {url}. Don't miss out!",
-        "Dear User, Your system has been infected with malware and sensitive data may have been compromised. Download the security patch immediately: {url} If no action is taken, your files may be deleted permanently. Support Team"
+        "Dear User, Your system has been infected with malware and sensitive data may have been compromised. Download the security patch immediately: {url} If no action is taken, your files may be deleted permanently. Support Team",
+        "Action Required: Your payment of $499.99 for order {id} was successful. If you did not authorize this transaction, cancel it immediately here: {url}",
+        "Final notice: Your bank account is restricted. Please update your billing information immediately at {url}",
+        "You have received a secure wire transfer. Click {url} to view your receipt.",
+        "Bitcoin investment alert! Double your crypto within 24 hours. Deposit here: {url}",
+        "Your PayPal account has been limited due to suspicious activity. Verify identity: {url}"
     ]
     
     ham_templates = [
@@ -25,7 +30,13 @@ def generate_synthetic_data(output_path="data/phishing_emails.csv", num_samples=
         "Let's meet via Zoom: https://zoom.us/j/123456789",
         "Here is the stackoverflow thread discussing this issue: https://stackoverflow.com/questions/123456",
         "For more information, visit our website at https://www.google.com",
-        "I've shared the document here: https://docs.google.com/document/d/example/edit"
+        "I've shared the document here: https://docs.google.com/document/d/example/edit",
+        "Your Amazon order has shipped. Track your package here: https://amazon.com/track/123",
+        "GitHub: A new issue was opened in your repository. View it at https://github.com/example/issues/1",
+        "Weekly Newsletter: Here are the top 5 articles you missed this week: https://news.example.com",
+        "Reminder: Please submit your timesheet by Friday 5 PM.",
+        "Thank you for your purchase! Your receipt is attached.",
+        "Are we still on for the 2 PM call? Here is the google meet link: https://meet.google.com/abc-defg-hij"
     ]
     
     data = []

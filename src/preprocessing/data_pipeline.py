@@ -22,8 +22,8 @@ class DataPreprocessor:
     def clean_text(self, text):
         """Basic text cleaning: lowercase, remove non-alpha, and extra whitespace."""
         text = text.lower()
-        # Remove non-alphanumeric characters but keep tokens like <URL> etc (handled later)
-        text = re.sub(r'[^a-zA-Z\s]', ' ', text)
+        # Remove non-alphanumeric characters but keep tokens like __urltoken__ etc
+        text = re.sub(r'[^a-zA-Z_\s]', ' ', text)
         text = re.sub(r'\s+', ' ', text).strip()
         return text
 

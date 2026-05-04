@@ -105,6 +105,8 @@ def predict(email: EmailInput):
     total_iocs = feats['url_count'] + feats['ip_count'] + feats['email_count']
     if total_iocs == 0 and feats['urgency_score'] < 0.2:
         final_prob = min(final_prob, 0.20) # Cap risk at 20% (Clean)
+    elif total_iocs > 0 and feats['urgency_score'] == 0 and feats.get('financial_score', 0) == 0:
+        final_prob = min(final_prob, 0.40) # Cap risk at 40% (Clean) if no urgency or financial lure
     
     # --- Step 6: Tiered Threat Categorization (Calibrated) ---
     # Increased Clean threshold to 0.45 to reduce false positives on real emails.
