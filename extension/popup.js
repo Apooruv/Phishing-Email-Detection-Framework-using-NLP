@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const dataStr = encodeURIComponent(JSON.stringify(dataToTransfer));
             // Try both localhost and 127.0.0.1 in case of mapping issues
-            const targetUrl = `http://localhost:3000/index.html?ext_data=${dataStr}`;
+            const targetUrl = `http://localhost:8000/ui/index.html?ext_data=${dataStr}`;
             
             console.log("PhishGuard: Data String Length:", dataStr.length);
             console.log("PhishGuard: Opening analysis page...");

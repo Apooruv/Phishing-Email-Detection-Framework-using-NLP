@@ -12,7 +12,9 @@ class FeatureExtractor:
         self.urgency_keywords = [
             "immediate action", "account suspended", "verify identity", 
             "invoice attached", "urgent", "password", "verify", "suspend",
-            "limited time", "security alert", "unauthorized access"
+            "limited time", "security alert", "unauthorized access",
+            "immediately", "malware", "infected", "compromised", "deleted",
+            "permanently", "action required", "patch"
         ]
 
     def extract_lexical_features(self, text):

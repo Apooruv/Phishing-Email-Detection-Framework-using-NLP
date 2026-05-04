@@ -2,6 +2,7 @@ import os
 import joblib
 import numpy as np
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from src.preprocessing.data_pipeline import DataPreprocessor
 from src.extraction.feature_extractor import FeatureExtractor
@@ -17,6 +18,9 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods (GET, POST, OPTIONS, etc.)
     allow_headers=["*"],  # Allows all headers
 )
+
+# Mount the frontend to /ui
+app.mount("/ui", StaticFiles(directory="frontend", html=True), name="frontend")
 
 # Load models and transformers
 rf_model = None
