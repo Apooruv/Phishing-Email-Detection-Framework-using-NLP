@@ -1,0 +1,131 @@
+/* styles.css */
+body {
+    width: 350px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+
+.container {
+    padding: 16px;
+}
+
+header {
+    text-align: center;
+    border-bottom: 1px solid #1e293b;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+}
+
+header h1 {
+    font-size: 1.2rem;
+    margin: 0;
+    background: linear-gradient(to right, #6366f1, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header p {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin: 4px 0 0 0;
+}
+
+.preview-area {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.field label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #6366f1;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.value {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 0.85rem;
+    max-height: 100px;
+    overflow-y: auto;
+    word-wrap: break-word;
+}
+
+.body-preview {
+    max-height: 120px;
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    white-space: pre-wrap;
+}
+
+.url-list {
+    max-height: 80px;
+    overflow-y: auto;
+    font-size: 0.75rem;
+}
+
+.url-item {
+    margin-bottom: 4px;
+    color: #38bdf8;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn.primary {
+    background: linear-gradient(to right, #6366f1, #a855f7);
+    color: white;
+}
+
+.btn.secondary {
+    background: #334155;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.error-msg {
+    color: #ef4444;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+}
+
+footer {
+    text-align: center;
+    font-size: 0.65rem;
+    color: #64748b;
+    margin-top: 16px;
+}

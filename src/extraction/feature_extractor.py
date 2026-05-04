@@ -12,7 +12,15 @@ class FeatureExtractor:
         self.urgency_keywords = [
             "immediate action", "account suspended", "verify identity", 
             "invoice attached", "urgent", "password", "verify", "suspend",
-            "limited time", "security alert", "unauthorized access"
+            "limited time", "security alert", "unauthorized access",
+            "immediately", "malware", "infected", "compromised", "deleted",
+            "permanently", "action required", "patch"
+        ]
+        
+        # Financial keywords
+        self.financial_keywords = [
+            "invoice", "payment", "bank", "wire transfer", "crypto", 
+            "billing", "bitcoin", "paypal", "transaction", "receipt"
         ]
 
     def extract_lexical_features(self, text):
@@ -33,9 +41,9 @@ class FeatureExtractor:
 
     def mask_sensitive_info(self, text):
         """Replaces URLs, IPs, and Emails with generic tokens."""
-        text = re.sub(self.url_pattern, '<URL>', text)
-        text = re.sub(self.ip_pattern, '<IP>', text)
-        text = re.sub(self.email_pattern, '<EMAIL>', text)
+        text = re.sub(self.url_pattern, '__urltoken__', text)
+        text = re.sub(self.ip_pattern, '__iptoken__', text)
+        text = re.sub(self.email_pattern, '__emailtoken__', text)
         return text
 
     def get_urgency_score(self, text):
@@ -44,13 +52,20 @@ class FeatureExtractor:
         count = sum(1 for word in self.urgency_keywords if word in text)
         return count / (len(text.split()) + 1)
 
+    def get_financial_score(self, text):
+        """Calculates the density of financial keywords."""
+        text = text.lower()
+        count = sum(1 for word in self.financial_keywords if word in text)
+        return count / (len(text.split()) + 1)
+
     def extract_all(self, text):
         """Runs all extraction and returns a feature dictionary + masked text."""
         lexical = self.extract_lexical_features(text)
         urgency_score = self.get_urgency_score(text)
+        financial_score = self.get_financial_score(text)
         masked_text = self.mask_sensitive_info(text)
         
-        features = {**lexical, 'urgency_score': urgency_score}
+        features = {**lexical, 'urgency_score': urgency_score, 'financial_score': financial_score}
         return features, masked_text
 
 if __name__ == "__main__":

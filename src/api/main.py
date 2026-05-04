@@ -2,6 +2,7 @@ import os
 import joblib
 import numpy as np
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from src.preprocessing.data_pipeline import DataPreprocessor
 from src.extraction.feature_extractor import FeatureExtractor
@@ -17,6 +18,9 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods (GET, POST, OPTIONS, etc.)
     allow_headers=["*"],  # Allows all headers
 )
+
+# Mount the frontend to /ui
+app.mount("/ui", StaticFiles(directory="frontend", html=True), name="frontend")
 
 # Load models and transformers
 rf_model = None
@@ -101,6 +105,8 @@ def predict(email: EmailInput):
     total_iocs = feats['url_count'] + feats['ip_count'] + feats['email_count']
     if total_iocs == 0 and feats['urgency_score'] < 0.2:
         final_prob = min(final_prob, 0.20) # Cap risk at 20% (Clean)
+    elif total_iocs > 0 and feats['urgency_score'] == 0 and feats.get('financial_score', 0) == 0:
+        final_prob = min(final_prob, 0.40) # Cap risk at 40% (Clean) if no urgency or financial lure
     
     # --- Step 6: Tiered Threat Categorization (Calibrated) ---
     # Increased Clean threshold to 0.45 to reduce false positives on real emails.

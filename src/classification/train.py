@@ -22,24 +22,20 @@ def process_single_email(text, extractor, preprocessor):
 
 def train_baseline_model():
     print("\n--- Phase 1-3: Baseline Model Training (Retrain) ---")
-    print("Loading real-world datasets (Enron & Nazario)...")
+    print("Loading synthetic dataset...")
     
     try:
-        enron_df = pd.read_csv("data/Enron.csv")
-        nazario_df = pd.read_csv("data/Nazario.csv")
+        df = pd.read_csv("data/phishing_emails.csv")
     except FileNotFoundError as e:
         print(f"Error: Dataset not found. {e}")
         return
 
-    enron_df = enron_df[['body', 'label']]
-    nazario_df = nazario_df[['body', 'label']]
-    
-    # Combine both datasets to pool all available real-world data
-    df_combined = pd.concat([enron_df, nazario_df]).reset_index(drop=True)
+    if 'body_text' in df.columns:
+        df = df.rename(columns={'body_text': 'body'})
     
     # Separate into Ham (0) and Phishing (1) to fix the bias issue
-    ham_df = df_combined[df_combined['label'] == 0]
-    phish_df = df_combined[df_combined['label'] == 1]
+    ham_df = df[df['label'] == 0]
+    phish_df = df[df['label'] == 1]
     
     min_samples = min(len(ham_df), len(phish_df), 5000)
     print(f"Total available - Ham: {len(ham_df)}, Phishing: {len(phish_df)}")

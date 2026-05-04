@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PhishGuard Extractor</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PhishGuard AI</h1>
+            <p>Gmail Phishing Detector</p>
+        </header>
+
+        <div id="not-gmail" class="hidden error-msg">
+            Please open a Gmail message to use this extension.
+        </div>
+
+        <div id="content-preview" class="preview-area">
+            <div class="field">
+                <label>Subject:</label>
+                <div id="subject" class="value">Loading...</div>
+            </div>
+            <div class="field">
+                <label>Sender:</label>
+                <div id="sender" class="value">Loading...</div>
+            </div>
+            <div class="field">
+                <label>Body Preview:</label>
+                <div id="body" class="value body-preview">Loading...</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="analyze-btn" class="btn primary">Analyze Email</button>
+            <button id="clear-btn" class="btn secondary">Clear</button>
+        </div>
+
+        <footer>
+            Integrated with NLP PhishGuard.ai
+        </footer>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
