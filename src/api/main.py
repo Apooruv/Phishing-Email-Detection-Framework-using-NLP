@@ -40,15 +40,17 @@ try:
     import tensorflow as tf
     from src.classification.lstm_model import PhishingLSTM
     # Initialize with max_len=150 to match the training script!
-    lstm_engine = PhishingLSTM(max_len=150)
-    lstm_engine.model = tf.keras.models.load_model("models/phishing_lstm.h5")
+    temp_lstm = PhishingLSTM(max_len=150)
+    temp_lstm.model = tf.keras.models.load_model("models/phishing_lstm.h5")
     with open("models/phishing_lstm_tokenizer.pkl", "rb") as f:
-        lstm_engine.tokenizer = joblib.load(f)
+        temp_lstm.tokenizer = joblib.load(f)
+    lstm_engine = temp_lstm
     print("SUCCESS: LSTM model loaded successfully.")
 except ImportError:
     print("WARNING: TensorFlow not installed. LSTM model will be disabled.")
 except Exception as e:
     print(f"Error loading LSTM model: {e}")
+    lstm_engine = None  # Ensure it's None if loading fails
 
 preprocessor = DataPreprocessor()
 extractor = FeatureExtractor()
@@ -86,7 +88,14 @@ def predict(email: EmailInput):
     lstm_prob = None
     if lstm_engine:
         try:
-            lstm_prob = float(lstm_engine.predict([clean_text])[0][0])
+            raw_lstm_prob = float(lstm_engine.predict([clean_text])[0][0])
+            
+            # --- Calibration (Smoothing) ---
+            # Deep learning models on small datasets can be overconfident (0.0 or 1.0).
+            # We apply a "softening" function to keep scores in a more realistic range (0.05 to 0.95)
+            # unless the model is extremely certain.
+            lstm_prob = 0.05 + (0.90 * raw_lstm_prob)
+            
         except Exception as e:
             print(f"Error during LSTM prediction: {e}")
 

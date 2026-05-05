@@ -111,3 +111,4 @@ Phishing-Email-Detection-Framework/
 ## Dashboard
 Open `frontend/index.html` in your browser to analyze emails in real-time.
 
+gemini --resume 85bcd97a-90e2-47d1-9c7a-50da8421c52f

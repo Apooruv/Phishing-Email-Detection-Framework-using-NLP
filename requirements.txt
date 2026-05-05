@@ -13,3 +13,4 @@ seaborn
 pytest
 joblib
 tqdm
+tensorflow[and-cuda]==2.21.0
