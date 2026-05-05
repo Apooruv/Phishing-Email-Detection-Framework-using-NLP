@@ -111,12 +111,13 @@ header p {
 }
 
 .btn.primary {
-    background-color: var(--text-main);
-    color: var(--bg-primary);
+    background: #00f050db;
+    color: white;
+    opacity: 1;
+    font-weight: 900;
 }
 
 .btn.primary:hover {
-    background-color: #ffffff;
     transform: translateY(-2px);
 }
 
@@ -127,7 +128,7 @@ header p {
 }
 
 .btn.secondary:hover {
-    color: var(--text-main);
+    color: #d3d3d3;
     border-color: var(--text-dim);
 }
 
