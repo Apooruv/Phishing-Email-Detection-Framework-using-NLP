@@ -3,6 +3,7 @@ numpy
 nltk
 beautifulsoup4
 scikit-learn
+tensorflow
 fastapi
 uvicorn
 python-multipart
