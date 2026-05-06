@@ -2,9 +2,20 @@
 
 This project uses NLP and Machine Learning to detect and classify phishing emails. It features a dual-model approach (Random Forest + Bi-LSTM) and provides a REST API with a modern web frontend.
 
+## ⚡ Quick Launch
+
+If you have already set up the environment, you can start both the Backend and Frontend with one command:
+
+```bash
+chmod +x launch.sh
+./launch.sh
+```
+- **Backend**: http://localhost:8000
+- **Frontend**: http://localhost:3000/index.html
+
 ## 🚀 Prerequisites
 
-- Python 3.10+ (Tested on Python 3.14)
+- Python 3.10+ (Tested on Python 3.12)
 - Virtual Environment (Recommended)
 
 ## 🛠️ Setup Instructions

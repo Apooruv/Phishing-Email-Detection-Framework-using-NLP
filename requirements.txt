@@ -3,7 +3,6 @@ numpy
 nltk
 beautifulsoup4
 scikit-learn
-tensorflow
 fastapi
 uvicorn
 python-multipart
@@ -13,3 +12,4 @@ seaborn
 pytest
 joblib
 tqdm
+tensorflow[and-cuda]==2.21.0
